@@ -2,6 +2,9 @@ const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 
+const geocode = require('./utils/geocode.js')
+const forecast = require('./utils/forecast.js')
+
 // call express to create new application
 const app = express()
 
@@ -49,11 +52,53 @@ app.get('/help', (req, res) => {
 // These other routes determine what is served for the other pages
 
 app.get('/weather', (req, res) => {
-    const weather = {
-        forecast: 'Sunny, 20 degrees',
-        location: 'Boston'
+    
+    const city = req.query.address
+
+    if (!city) {
+        return res.send({
+            error: 'You must provide a city'
+        })
     }
-    res.send(weather)
+
+    // Call geoCode to translate city to it's coordinates
+    geocode(city, (error, {latitude, longitude, location} = {}) => {
+        // if we get an error return it
+        if (error) {
+            return res.send({
+                error
+            })
+        }
+        // Use the results from geocode to call forecast
+        forecast(latitude, longitude, (error, forecast) => {
+            if (error) {
+                return res.send({
+                    error
+                })
+            }
+            
+            // return forecast data
+            res.send({
+                forecast,
+                location,
+                address: req.query.address
+            })
+        })
+    })
+    
+})
+
+app.get('/products', (req, res) => {
+    // Make sure they provide a search term
+    if (!req.query.search) {
+        return res.send({
+            error: 'You must provide a search term'
+        })
+    }
+    
+    res.send({
+        products: []
+    })
 })
 
 app.get('/help/*', (req, res) => {
