@@ -4,4 +4,5 @@ const mapboxApiKey = "pk.eyJ1IjoiamVzc2VnZyIsImEiOiJjazlxNmp1aTkwZHRuM2ptb3BzNmh
 module.exports = {
     weatherApiKey: weatherApiKey,
     mapboxApiKey: mapboxApiKey
+    
 }
