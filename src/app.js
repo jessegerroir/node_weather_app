@@ -7,6 +7,7 @@ const forecast = require('./utils/forecast.js')
 
 // call express to create new application
 const app = express()
+const port = process.env.PORT || 3000
 
 // Define paths for express config
 const publicDirectory = path.join(__dirname, '../public')
@@ -119,8 +120,8 @@ app.get('*', (req, res) => {
 })
 
 // starts server and has port listen at port 3000
-app.listen(3000, () => {
-    console.log('Server has started on port 3000')
+app.listen(port, () => {
+    console.log('Server has started on port ' + port)
 })
 
 // We can shut down the webserver with ctrl + c
