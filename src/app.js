@@ -1,20 +1,23 @@
-const path = require('path')
-const express = require('express')
-const hbs = require('hbs')
-
-const geocode = require('./utils/geocode.js')
-const forecast = require('./utils/forecast.js')
-
 // call express to create new application
+// express is our webserver
+const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
+// Functionality for getting the forcast and geodata
+const geocode = require('./utils/geocode.js')
+const forecast = require('./utils/forecast.js')
+
 // Define paths for express config
+// these let us manage paths to different folders easier
+const path = require('path')
 const publicDirectory = path.join(__dirname, '../public')
 const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 
 // Setup handlebars engine and views location
+// (handlebars is what handles rendering pages based off of templates)
+const hbs = require('hbs')
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
@@ -22,10 +25,12 @@ hbs.registerPartials(partialsPath)
 // Setup static directory for express to serve
 // (It recognizes all the web pages in the static directory 
 // and builds the routing)
-app.use(express.static(publicDirectory))
+app.use(express.static(publicDirectory));
 
+// Routing -----
+// The following will route the user to the correct page depending on url (using handlebar)
 
-// Setup the path to the Index page (using handlebar)
+// Index page
 app.get('', (req, res) => {
     res.render('index', {
         title: 'Weather App',
@@ -33,7 +38,7 @@ app.get('', (req, res) => {
     })
 })
 
-// Setup the path to the About page (using handlebar)
+// About page
 app.get('/about', (req, res) => {
     res.render('about', {
         title: 'About',
@@ -41,7 +46,7 @@ app.get('/about', (req, res) => {
     })
 })
 
-// Setup the path to the Help page (using handlebar)
+// Help page
 app.get('/help', (req, res) => {
     res.render('help', {
         title: 'Help',
@@ -50,8 +55,7 @@ app.get('/help', (req, res) => {
     })
 })
 
-// These other routes determine what is served for the other pages
-
+// Weather page
 app.get('/weather', (req, res) => {
     
     const city = req.query.address
@@ -89,6 +93,7 @@ app.get('/weather', (req, res) => {
     
 })
 
+// Products page
 app.get('/products', (req, res) => {
     // Make sure they provide a search term
     if (!req.query.search) {
@@ -102,6 +107,7 @@ app.get('/products', (req, res) => {
     })
 })
 
+// If they try to search for anything under help
 app.get('/help/*', (req, res) => {
     res.render('404page', {
         title: '404: Page Not Found',
@@ -110,7 +116,7 @@ app.get('/help/*', (req, res) => {
     })
 })
 
-// generic 404 page to match anything that hasn't been matched above
+// Generic 404 page (matches anything that hasn't been matched above)
 app.get('*', (req, res) => {
     res.render('404page', {
         title: '404: Page Not Found',
@@ -123,5 +129,3 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
     console.log('Server has started on port ' + port)
 })
-
-// We can shut down the webserver with ctrl + c
