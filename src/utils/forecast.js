@@ -1,6 +1,5 @@
 const request = require('request')
-const config = require('../../config.js')
-
+const config = require('../../config/config');
 
 const forecast = (latitude, longitdue, callback) => {
     

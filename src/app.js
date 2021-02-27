@@ -1,8 +1,10 @@
+const config = require('../config/config');
+
 // call express to create new application
 // express is our webserver
-const express = require('express')
-const app = express()
-const port = process.env.PORT || 3000
+const express = require('express');
+const app = express();
+const port = config.port;
 
 // Functionality for getting the forcast and geodata
 const geocode = require('./utils/geocode.js')
